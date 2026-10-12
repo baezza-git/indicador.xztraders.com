@@ -79,6 +79,14 @@ npm test                          # tests con LBANK simulado
 
 Netlify activa HTTPS solo en unos minutos. Cada push a la rama de producción vuelve a publicar la web.
 
+Sitio actual: `xztraders-indicador` (`https://xztraders-indicador.netlify.app`), con el dominio `indicador.xztraders.com`. Si un sitio nuevo pide iniciar sesión en Netlify al abrirlo, desactiva la protección de visitantes en *Site configuration → Access & security → Visitor access*.
+
+Para publicar a mano sin conectar GitHub:
+
+```bash
+NETLIFY_AUTH_TOKEN=... npx netlify-cli deploy --prod --site xztraders-indicador --dir public --functions netlify/functions
+```
+
 ## Seguridad
 
 - La web no carga nada de fuera: fuentes y three.js están en el propio repo. Así no depende de ningún CDN ni envía datos de los visitantes a terceros.
