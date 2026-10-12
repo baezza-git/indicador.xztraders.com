@@ -1,0 +1,27 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "indicador-xztraders",
+  "main": "worker/index.js",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // La web (HTML, CSS, JS, imágenes) se sirve desde /public.
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS"
+  },
+
+  // Dominio propio. Requiere que xztraders.com esté en Cloudflare (ver README).
+  "routes": [{ "pattern": "indicador.xztraders.com", "custom_domain": true }],
+
+  // Ajustes que no son secretos. Los secretos (claves de LBANK y enlace del
+  // indicador) se guardan con `npx wrangler secret put` y nunca van al repo.
+  "vars": {
+    "MIN_DEPOSIT": "115",
+    "DEPOSIT_FIELD": "netDeposit",
+    "REQUIRE_DIRECT_INVITE": "true",
+    "ALLOWED_ORIGINS": ""
+  },
+
+  "observability": { "enabled": true }
+}

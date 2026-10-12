@@ -1,0 +1,186 @@
+import assert from 'node:assert/strict';
+import { beforeEach, describe, it } from 'node:test';
+import { handleVerify, resetState } from '../worker/index.js';
+import { buildSign, lbankGet, randomEchostr } from '../worker/lbank.js';
+import { parseUid } from '../worker/verify.js';
+
+const ENV = {
+  LBANK_API_KEY: 'test-api-key',
+  LBANK_SECRET_KEY: 'test-secret',
+  INDICATOR_URL: 'https://example.com/indicador',
+  MIN_DEPOSIT: '115',
+  DEPOSIT_FIELD: 'netDeposit',
+  REQUIRE_DIRECT_INVITE: 'true',
+};
+
+// Simula la API de LBANK: `users` indexado por openId.
+function fakeLBank(users, calls = []) {
+  return async (url, init) => {
+    const u = new URL(url);
+    calls.push({ path: u.pathname, params: Object.fromEntries(u.searchParams), headers: init.headers });
+    const user = users[u.searchParams.get('openId') || u.searchParams.get('numOpenId')];
+    let data;
+    if (u.pathname.endsWith('/invite/user/info')) {
+      data = user
+        ? { inviteResult: true, directInvitation: user.direct ?? true }
+        : { inviteResult: false, directInvitation: false };
+    } else if (u.pathname.endsWith('/money/net/deposit/total')) {
+      data = { totalDeposit: String(user?.deposit ?? 0), totalWithdraw: '0', netDeposit: String(user?.deposit ?? 0) };
+    }
+    return Response.json({ result: 'true', error_code: 0, data, ts: 1 });
+  };
+}
+
+function verifyRequest(body, ip = '1.1.1.1') {
+  return new Request('https://indicador.xztraders.com/api/verify', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'CF-Connecting-IP': ip },
+    body: typeof body === 'string' ? body : JSON.stringify(body),
+  });
+}
+
+async function verify(uid, users, { env = ENV, ip, calls } = {}) {
+  const res = await handleVerify(verifyRequest({ uid }, ip), env, { fetchImpl: fakeLBank(users, calls) });
+  return { status: res.status, body: await res.json() };
+}
+
+describe('firma LBANK', () => {
+  it('coincide con el conector oficial de Python', () => {
+    // Valor calculado con lbank-connector-python (utils.build_md5 + hmac sha256).
+    const sign = buildSign(
+      {
+        openId: 'LBA0001001',
+        api_key: 'test-api-key',
+        timestamp: '1721305060631',
+        signature_method: 'HmacSHA256',
+        echostr: 'P3LHfw6tUIYWc8R2VQNy0ilKmdg5pjhbxC7',
+      },
+      'test-secret'
+    );
+    assert.equal(sign, 'b47f325941518fdaaae330e9fab673930b10ce5450f1977954de888662464b6e');
+  });
+
+  it('echostr tiene 35 letras y números', () => {
+    assert.match(randomEchostr(), /^[A-Za-z0-9]{35}$/);
+  });
+
+  it('manda api_key y sign en la URL y el resto en cabeceras', async () => {
+    const calls = [];
+    await lbankGet('/affiliate-api/v2/invite/user/info', { openId: 'LBA0001001' }, {
+      apiKey: 'test-api-key',
+      secretKey: 'test-secret',
+      timestamp: '1721305060631',
+      echostr: 'P3LHfw6tUIYWc8R2VQNy0ilKmdg5pjhbxC7',
+      fetchImpl: fakeLBank({}, calls),
+    });
+    assert.deepEqual(calls[0].params, {
+      openId: 'LBA0001001',
+      api_key: 'test-api-key',
+      sign: 'b47f325941518fdaaae330e9fab673930b10ce5450f1977954de888662464b6e',
+    });
+    assert.equal(calls[0].headers.timestamp, '1721305060631');
+    assert.equal(calls[0].headers.signature_method, 'HmacSHA256');
+  });
+
+  it('lanza error si LBANK responde result=false', async () => {
+    const fetchImpl = async () => Response.json({ result: 'false', msg: 'bad sign', error_code: 10003 });
+    await assert.rejects(
+      lbankGet('/x', {}, { apiKey: 'k', secretKey: 's', fetchImpl }),
+      (err) => err.name === 'LBankError' && err.code === 10003
+    );
+  });
+});
+
+describe('parseUid', () => {
+  it('acepta UID con LBA o numérico', () => {
+    assert.deepEqual(parseUid(' lba32323 '), { openId: 'LBA32323' });
+    assert.deepEqual(parseUid('6537377207'), { numOpenId: '6537377207' });
+  });
+
+  it('rechaza basura', () => {
+    for (const bad of ['', 'hola', 'LBA', '12', 'LBA32323&x=1', null, undefined, { a: 1 }]) {
+      assert.equal(parseUid(bad), null, String(bad));
+    }
+  });
+});
+
+describe('/api/verify', () => {
+  beforeEach(() => resetState());
+
+  const users = {
+    LBA0000OK1: { deposit: 150 },
+    LBA000EXACT: { deposit: 115 },
+    LBA000POOR: { deposit: 50 },
+    LBA000SUB: { deposit: 500, direct: false },
+  };
+
+  it('da el enlace si está registrado y ha depositado lo suficiente', async () => {
+    const { status, body } = await verify('LBA0000OK1', users);
+    assert.equal(status, 200);
+    assert.deepEqual(body, { ok: true, url: ENV.INDICATOR_URL });
+  });
+
+  it('acepta justo el mínimo', async () => {
+    assert.equal((await verify('LBA000EXACT', users)).body.ok, true);
+  });
+
+  it('no registrado con el enlace', async () => {
+    assert.deepEqual((await verify('LBA9999999', users)).body, { ok: false, code: 'not_registered' });
+  });
+
+  it('depósito insuficiente, sin revelar la cantidad', async () => {
+    assert.deepEqual((await verify('LBA000POOR', users)).body, { ok: false, code: 'low_deposit' });
+  });
+
+  it('del equipo pero no invitado directo', async () => {
+    assert.deepEqual((await verify('LBA000SUB', users)).body, { ok: false, code: 'not_direct' });
+    resetState();
+    const env = { ...ENV, REQUIRE_DIRECT_INVITE: 'false' };
+    assert.equal((await verify('LBA000SUB', users, { env })).body.ok, true);
+  });
+
+  it('UID inválido no llama a LBANK', async () => {
+    const calls = [];
+    const { status, body } = await verify('nope', users, { calls });
+    assert.equal(status, 400);
+    assert.equal(body.code, 'invalid_uid');
+    assert.equal(calls.length, 0);
+  });
+
+  it('JSON roto', async () => {
+    const res = await handleVerify(verifyRequest('{nope'), ENV, { fetchImpl: fakeLBank(users) });
+    assert.equal(res.status, 400);
+  });
+
+  it('sin secretos configurados no filtra nada', async () => {
+    const { status, body } = await verify('LBA0000OK1', users, { env: { ...ENV, INDICATOR_URL: '' } });
+    assert.equal(status, 503);
+    assert.deepEqual(body, { ok: false, code: 'unavailable' });
+  });
+
+  it('error de LBANK → unavailable', async () => {
+    const fetchImpl = async () => Response.json({ result: 'false', msg: 'limit', error_code: 10008 });
+    const res = await handleVerify(verifyRequest({ uid: 'LBA0000OK1' }), ENV, { fetchImpl });
+    assert.equal(res.status, 502);
+    assert.deepEqual(await res.json(), { ok: false, code: 'unavailable' });
+  });
+
+  it('reutiliza el resultado reciente sin volver a llamar a LBANK', async () => {
+    const calls = [];
+    await verify('LBA0000OK1', users, { calls });
+    await verify('LBA0000OK1', users, { calls, ip: '2.2.2.2' });
+    assert.equal(calls.length, 2);
+  });
+
+  it('limita las peticiones por IP', async () => {
+    let last;
+    for (let i = 0; i < 11; i++) last = await verify(`LBA00000${i}0`, users, { ip: '9.9.9.9' });
+    assert.equal(last.status, 429);
+    assert.equal(last.body.code, 'rate_limited');
+  });
+
+  it('solo POST', async () => {
+    const res = await handleVerify(new Request('https://x/api/verify'), ENV);
+    assert.equal(res.status, 405);
+  });
+});

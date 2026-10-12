@@ -1,0 +1,14 @@
+{
+  "name": "indicador-xztraders",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "node --test",
+    "check-uid": "node scripts/check-uid.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "4.139.0"
+  }
+}

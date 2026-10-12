@@ -812,6 +812,10 @@ svg {
   line-height: 1.6;
 }
 
+.features--3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
 /* --------------------------------------------------------------------------
    Pasos
    -------------------------------------------------------------------------- */
@@ -870,6 +874,172 @@ svg {
 
 .step p + .btn {
   margin-top: 10px;
+}
+
+/* --------------------------------------------------------------------------
+   Verificar UID
+   -------------------------------------------------------------------------- */
+
+.verify-section::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 140px;
+  width: min(900px, 100%);
+  height: 420px;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, rgba(124, 108, 255, 0.1), transparent 65%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.verify {
+  display: grid;
+  gap: 16px;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.verify__form {
+  display: grid;
+  gap: 12px;
+  padding: 28px;
+  border: 1px solid rgba(180, 184, 255, 0.18);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, rgba(124, 108, 255, 0.06), rgba(255, 255, 255, 0.01));
+}
+
+.verify__label {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.verify__row {
+  display: flex;
+  gap: 10px;
+}
+
+.verify__input {
+  flex: 1;
+  min-width: 0;
+  padding: 13px 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.verify__input::placeholder {
+  color: var(--text-3);
+}
+
+.verify__input:focus {
+  outline: none;
+  border-color: rgba(180, 184, 255, 0.6);
+  box-shadow: 0 0 0 3px rgba(124, 108, 255, 0.2);
+}
+
+.verify__hint {
+  color: var(--text-3);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.verify__submit {
+  flex-shrink: 0;
+}
+
+.verify__submit:disabled {
+  cursor: progress;
+  opacity: 0.8;
+}
+
+.verify__spinner {
+  display: none;
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgba(10, 10, 10, 0.25);
+  border-top-color: #0a0a0a;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+.is-loading .verify__spinner {
+  display: inline-block;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.verify__result:empty {
+  display: none;
+}
+
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 20px 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  animation: notice-in 0.5s var(--ease) both;
+}
+
+@keyframes notice-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.notice > svg {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+}
+
+.notice strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.notice p {
+  margin-top: 6px;
+  color: var(--text-2);
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+
+.notice .btn {
+  margin-top: 14px;
+}
+
+.notice--ok {
+  border-color: rgba(34, 197, 94, 0.35);
+  background: rgba(34, 197, 94, 0.07);
+}
+
+.notice--ok > svg {
+  color: var(--up);
+}
+
+.notice--error {
+  border-color: rgba(240, 82, 82, 0.3);
+  background: rgba(240, 82, 82, 0.06);
+}
+
+.notice--error > svg {
+  color: var(--down);
 }
 
 /* --------------------------------------------------------------------------
@@ -1072,6 +1242,10 @@ svg {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .features--3 {
+    grid-template-columns: 1fr;
+  }
+
   .steps {
     grid-template-columns: 1fr;
   }
@@ -1176,6 +1350,14 @@ svg {
 
   .step {
     padding: 26px 22px;
+  }
+
+  .verify__form {
+    padding: 22px 18px;
+  }
+
+  .verify__row {
+    flex-direction: column;
   }
 
   .faq summary {
