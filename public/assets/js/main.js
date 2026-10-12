@@ -25,7 +25,7 @@ const VERIFY_MESSAGES = {
   },
   not_registered: {
     title: 'Esta cuenta no está registrada con mi enlace',
-    text: 'Crea una cuenta nueva en LBANK con mi enlace, deposita más de 115 USDT y vuelve a probar.',
+    text: 'Crea una cuenta nueva en LBANK con mi enlace, deposita al menos 101 USDT y vuelve a probar.',
     action: { label: 'Abrir LBANK', link: 'lbank' },
   },
   not_direct: {
@@ -34,8 +34,8 @@ const VERIFY_MESSAGES = {
     action: { label: 'Abrir LBANK', link: 'lbank' },
   },
   low_deposit: {
-    title: 'Aún no llegas a 115 USDT depositados',
-    text: 'Deposita más de 115 USDT en tu cuenta de LBANK. Si acabas de hacerlo, espera unos minutos y vuelve a probar.',
+    title: 'Aún no llegas a 101 USDT depositados',
+    text: 'Deposita al menos 101 USDT en tu cuenta de LBANK. Si acabas de hacerlo, espera unos minutos y vuelve a probar.',
   },
   rate_limited: {
     title: 'Demasiados intentos',

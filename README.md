@@ -3,7 +3,7 @@
 Web del **Indicador Chino** de XZ TRADERS. Para conseguirlo, el usuario:
 
 1. Se registra en LBANK con el enlace de afiliado.
-2. Deposita más de 115 USDT.
+2. Deposita al menos 101 USDT.
 3. Escribe su UID de LBANK en la web. Se comprueba al momento con la API de afiliados de LBANK y, si cumple, recibe el enlace del indicador.
 
 La web se publica en **Netlify**. La comprobación es una función de Netlify (`/api/verify`) porque la clave de la API de LBANK no puede estar en la página: cualquiera podría verla, y además LBANK no deja que un navegador llame a su API directamente.
@@ -53,7 +53,7 @@ Se configuran en Netlify, en *Site configuration → Environment variables*. Nun
 | `LBANK_API_KEY`         | Sí          | API key de afiliado de LBANK                                           |
 | `LBANK_API_SECRET`      | Sí          | Secret key de esa API key (firma HmacSHA256)                           |
 | `INDICATOR_URL`         | Sí          | Enlace que recibe quien cumple: `https://es.tradingview.com/script/stIGX5O9/` |
-| `MIN_DEPOSIT`           | No (`100`)  | USDT mínimos que exige la API. La web pide 115 a propósito: así hay margen |
+| `MIN_DEPOSIT`           | No (`100`)  | USDT mínimos que exige la API. La web pide 101 a propósito: así hay margen |
 | `DEPOSIT_FIELD`         | No (`netDeposit`) | `netDeposit` (depósitos − retiradas) o `totalDeposit` (solo depósitos) |
 | `REQUIRE_DIRECT_INVITE` | No (`true`) | `false` acepta también a los invitados por tus subafiliados            |
 
