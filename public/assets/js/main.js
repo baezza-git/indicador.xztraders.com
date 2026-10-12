@@ -9,6 +9,7 @@
 const LINKS = {
   lbank: 'https://www.lbank.com/ref/62R2M', // Enlace de referido de LBANK
   telegram: 'https://t.me/xztraders_aibot', // Bot de Telegram para dudas
+  contact: 'https://t.me/baezza', // Mi Telegram, para quien tenga problemas al verificar
 };
 
 // Dirección de la función que comprueba el UID (netlify/functions/verify.mjs).
@@ -16,7 +17,7 @@ const VERIFY_URL = '/api/verify';
 
 /*
  * MENSAJES DE LA VERIFICACIÓN
- * `action` añade un botón que usa uno de los enlaces de arriba.
+ * `actions` añade botones que usan los enlaces de arriba.
  */
 const VERIFY_MESSAGES = {
   invalid_uid: {
@@ -25,13 +26,16 @@ const VERIFY_MESSAGES = {
   },
   not_registered: {
     title: 'Esta cuenta no está registrada con mi enlace',
-    text: 'Crea una cuenta nueva en LBANK con mi enlace, deposita al menos 101 USDT y vuelve a probar.',
-    action: { label: 'Abrir LBANK', link: 'lbank' },
+    text: 'Crea una cuenta nueva en LBANK con mi enlace, deposita al menos 101 USDT y vuelve a probar. Si acabas de registrarte, espera unos 10 minutos o escríbeme por Telegram.',
+    actions: [
+      { label: 'Abrir LBANK', link: 'lbank' },
+      { label: 'Escribirme por Telegram', link: 'contact' },
+    ],
   },
   not_direct: {
     title: 'Esta cuenta no se creó con mi enlace',
     text: 'Para conseguir el indicador tienes que registrarte directamente con mi enlace de LBANK.',
-    action: { label: 'Abrir LBANK', link: 'lbank' },
+    actions: [{ label: 'Abrir LBANK', link: 'lbank' }],
   },
   low_deposit: {
     title: 'Aún no llegas a 101 USDT depositados en LBANK',
@@ -44,7 +48,7 @@ const VERIFY_MESSAGES = {
   unavailable: {
     title: 'No hemos podido comprobarlo ahora',
     text: 'Inténtalo de nuevo en unos minutos. Si sigue fallando, escribe a nuestro bot de Telegram.',
-    action: { label: 'Abrir Telegram', link: 'telegram' },
+    actions: [{ label: 'Abrir Telegram', link: 'telegram' }],
   },
 };
 
@@ -206,8 +210,16 @@ function initVerify() {
 
   const showError = (code) => {
     const msg = VERIFY_MESSAGES[code] || VERIFY_MESSAGES.unavailable;
-    const action = msg.action && LINKS[msg.action.link] ? linkButton(msg.action.label, LINKS[msg.action.link]) : null;
-    render('error', msg.title, msg.text, action);
+    const buttons = (msg.actions || [])
+      .filter((a) => LINKS[a.link])
+      .map((a) => linkButton(a.label, LINKS[a.link]));
+    let actions = null;
+    if (buttons.length) {
+      actions = document.createElement('div');
+      actions.className = 'notice__actions';
+      actions.append(...buttons);
+    }
+    render('error', msg.title, msg.text, actions);
   };
 
   const isSafeUrl = (url) => {
