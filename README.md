@@ -1,6 +1,6 @@
 # indicador.xztraders.com
 
-Web del **Indicador Chino** de XZ TRADERS. Para conseguirlo, el usuario:
+Web del **Indicador Japonés** de XZ TRADERS. Para conseguirlo, el usuario:
 
 1. Se registra en LBANK con el enlace de afiliado.
 2. Deposita al menos 101 USDT.
