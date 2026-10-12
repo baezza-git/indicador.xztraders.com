@@ -1,0 +1,10 @@
+# Netlify publica la web desde /public y la comprobación del UID como función.
+# Las claves de LBANK y el enlace del indicador van en las variables de entorno
+# del sitio (Site configuration → Environment variables), nunca aquí.
+[build]
+  publish = "public"
+  command = "npm test"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"

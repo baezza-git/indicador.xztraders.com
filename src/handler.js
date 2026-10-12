@@ -1,7 +1,6 @@
 /* ==========================================================================
-   Worker de indicador.xztraders.com
-   - POST /api/verify  → comprueba el UID en LBANK y devuelve el enlace.
-   - Todo lo demás     → archivos estáticos de /public.
+   POST /api/verify → comprueba el UID en LBANK y devuelve el enlace.
+   La función de Netlify (netlify/functions/verify.mjs) solo llama aquí.
    ========================================================================== */
 
 import { LBankError } from './lbank.js';
@@ -74,12 +73,11 @@ function json(body, status, extraHeaders = {}) {
   });
 }
 
-export async function handleVerify(request, env, { fetchImpl = fetch, now = Date.now() } = {}) {
+export async function handleVerify(request, env, { fetchImpl = fetch, now = Date.now(), ip = 'unknown' } = {}) {
   const cors = corsHeaders(request, env);
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
   if (request.method !== 'POST') return json({ ok: false, code: 'method_not_allowed' }, 405, { Allow: 'POST', ...cors });
 
-  const ip = request.headers.get('CF-Connecting-IP') || 'local';
   if (rateLimited(ip, now)) return json({ ok: false, code: 'rate_limited' }, 429, { 'Retry-After': '60', ...cors });
 
   let payload;
@@ -96,7 +94,7 @@ export async function handleVerify(request, env, { fetchImpl = fetch, now = Date
 
   const config = readConfig(env);
   if (!config.apiKey || !config.secretKey || !config.indicatorUrl) {
-    console.error('Faltan secretos: LBANK_API_KEY, LBANK_SECRET_KEY o INDICATOR_URL');
+    console.error('Faltan secretos: LBANK_API_KEY, LBANK_API_SECRET o INDICATOR_URL');
     return json({ ok: false, code: 'unavailable' }, 503, cors);
   }
 
@@ -116,12 +114,3 @@ export async function handleVerify(request, env, { fetchImpl = fetch, now = Date
   if (!result.ok) return json({ ok: false, code: result.code }, 200, cors);
   return json({ ok: true, url: config.indicatorUrl }, 200, cors);
 }
-
-export default {
-  async fetch(request, env) {
-    const { pathname } = new URL(request.url);
-    if (pathname === '/api/verify') return handleVerify(request, env);
-    if (pathname.startsWith('/api/')) return json({ ok: false, code: 'not_found' }, 404);
-    return env.ASSETS.fetch(request);
-  },
-};

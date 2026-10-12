@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
 import { beforeEach, describe, it } from 'node:test';
-import { handleVerify, resetState } from '../worker/index.js';
-import { buildSign, lbankGet, randomEchostr } from '../worker/lbank.js';
-import { parseUid } from '../worker/verify.js';
+import { handleVerify, resetState } from '../src/handler.js';
+import { buildSign, lbankGet, randomEchostr } from '../src/lbank.js';
+import { parseUid } from '../src/verify.js';
 
 const ENV = {
   LBANK_API_KEY: 'test-api-key',
-  LBANK_SECRET_KEY: 'test-secret',
+  LBANK_API_SECRET: 'test-secret',
   INDICATOR_URL: 'https://example.com/indicador',
   MIN_DEPOSIT: '100',
   DEPOSIT_FIELD: 'netDeposit',
@@ -31,16 +31,16 @@ function fakeLBank(users, calls = []) {
   };
 }
 
-function verifyRequest(body, ip = '1.1.1.1') {
+function verifyRequest(body) {
   return new Request('https://indicador.xztraders.com/api/verify', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'CF-Connecting-IP': ip },
+    headers: { 'Content-Type': 'application/json' },
     body: typeof body === 'string' ? body : JSON.stringify(body),
   });
 }
 
-async function verify(uid, users, { env = ENV, ip, calls } = {}) {
-  const res = await handleVerify(verifyRequest({ uid }, ip), env, { fetchImpl: fakeLBank(users, calls) });
+async function verify(uid, users, { env = ENV, ip = '1.1.1.1', calls } = {}) {
+  const res = await handleVerify(verifyRequest({ uid }), env, { fetchImpl: fakeLBank(users, calls), ip });
   return { status: res.status, body: await res.json() };
 }
 

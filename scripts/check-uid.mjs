@@ -1,14 +1,14 @@
 // Prueba la conexión con LBANK desde tu ordenador, sin desplegar nada.
 // Uso: npm run check-uid -- LBA32323
-// Lee las claves de .dev.vars (o de las variables de entorno).
+// Lee las claves de .env (o de las variables de entorno).
 
 import { existsSync, readFileSync } from 'node:fs';
-import { lbankGet } from '../worker/lbank.js';
-import { checkUid, parseUid, readConfig } from '../worker/verify.js';
+import { lbankGet } from '../src/lbank.js';
+import { checkUid, parseUid, readConfig } from '../src/verify.js';
 
 const env = { ...process.env };
-if (existsSync('.dev.vars')) {
-  for (const line of readFileSync('.dev.vars', 'utf8').split('\n')) {
+if (existsSync('.env')) {
+  for (const line of readFileSync('.env', 'utf8').split('\n')) {
     const match = line.match(/^\s*([A-Z_]+)\s*=\s*(.*)\s*$/);
     if (match && !(match[1] in process.env)) env[match[1]] = match[2];
   }
@@ -22,7 +22,7 @@ if (!id) {
 
 const config = readConfig(env);
 if (!config.apiKey || !config.secretKey) {
-  console.error('Faltan LBANK_API_KEY y LBANK_SECRET_KEY en .dev.vars');
+  console.error('Faltan LBANK_API_KEY y LBANK_API_SECRET en .env');
   process.exit(1);
 }
 

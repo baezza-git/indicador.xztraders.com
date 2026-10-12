@@ -6,27 +6,28 @@ Web del **Indicador Chino** de XZ TRADERS. Para conseguirlo, el usuario:
 2. Deposita más de 115 USDT.
 3. Escribe su UID de LBANK en la web. Se comprueba al momento con la API de afiliados de LBANK y, si cumple, recibe el enlace del indicador.
 
-La web y la comprobación corren en un único **Cloudflare Worker**. La comprobación necesita un servidor porque la clave de la API de LBANK no puede estar en la página: cualquiera podría verla. El enlace del indicador tampoco está en la página; solo lo devuelve el servidor cuando el UID cumple.
+La web se publica en **Netlify**. La comprobación es una función de Netlify (`/api/verify`) porque la clave de la API de LBANK no puede estar en la página: cualquiera podría verla, y además LBANK no deja que un navegador llame a su API directamente.
 
 ## Estructura
 
 ```
-public/                 Web estática (lo que ve el visitante)
-  index.html            Página principal
-  assets/css/styles.css Estilos (tokens de color y tipografía al inicio)
-  assets/js/main.js     Enlaces, formulario del UID y animaciones
-  assets/js/beams.js    Fondo animado del hero (three.js; si no hay WebGL se usa el fondo CSS)
-  assets/img/           Logo, favicons e imagen para redes (og-cover.jpg)
-  assets/fonts/         Fuentes Geist y Geist Mono (licencia OFL)
-  assets/vendor/three/  three.js r180 (licencia MIT)
-  _headers              Cabeceras de seguridad
-worker/                 Servidor (Cloudflare Worker)
-  index.js              POST /api/verify y el resto de la web
-  verify.js             Reglas: registrado con el enlace + depósito mínimo
-  lbank.js              Cliente firmado de la API de afiliados de LBANK
-scripts/check-uid.mjs   Prueba la conexión con LBANK desde tu ordenador
-test/                   Tests (npm test)
-wrangler.jsonc          Configuración del Worker
+public/                    Web estática (lo que ve el visitante)
+  index.html               Página principal
+  assets/css/styles.css    Estilos (tokens de color y tipografía al inicio)
+  assets/js/main.js        Enlaces, formulario del UID y animaciones
+  assets/js/beams.js       Fondo animado del hero (three.js; si no hay WebGL se usa el fondo CSS)
+  assets/img/              Logo, favicons e imagen para redes (og-cover.jpg)
+  assets/fonts/            Fuentes Geist y Geist Mono (licencia OFL)
+  assets/vendor/three/     three.js r180 (licencia MIT)
+  _headers                 Cabeceras de seguridad
+netlify/functions/verify.mjs  Función de Netlify: POST /api/verify
+src/
+  handler.js               Petición → respuesta (límite por IP, caché, errores)
+  verify.js                Reglas: registrado con el enlace + depósito mínimo
+  lbank.js                 Cliente firmado de la API de afiliados de LBANK
+scripts/check-uid.mjs      Prueba la conexión con LBANK desde tu ordenador
+test/                      Tests (npm test)
+netlify.toml               Configuración de Netlify
 ```
 
 ## Cómo funciona la comprobación
@@ -43,51 +44,40 @@ El UID se acepta con prefijo (`LBA32323`, se manda como `openId`) o solo con nú
 
 Para no pasar el límite de LBANK (5 peticiones cada 10 s), cada IP puede hacer 10 comprobaciones por minuto. Los resultados se recuerdan un rato: 10 minutos si cumple y 30 segundos si no.
 
-## Ajustes
+## Variables de entorno
 
-En `wrangler.jsonc`, dentro de `vars`:
+Se configuran en Netlify, en *Site configuration → Environment variables*. Nunca van en el repositorio.
 
-| Variable                | Por defecto  | Qué hace                                                                          |
-| ----------------------- | ------------ | --------------------------------------------------------------------------------- |
-| `MIN_DEPOSIT`           | `100`        | USDT mínimos que exige la API. La web pide 115 a propósito: así hay margen        |
-| `DEPOSIT_FIELD`         | `netDeposit` | `netDeposit` (depósitos − retiradas) o `totalDeposit` (solo depósitos)            |
-| `REQUIRE_DIRECT_INVITE` | `true`       | `false` acepta también a los invitados por tus subafiliados                       |
-| `ALLOWED_ORIGINS`       | vacío        | Solo si la web se sirve desde otro dominio: orígenes permitidos, separados por comas |
+| Variable                | Obligatoria | Qué es                                                                 |
+| ----------------------- | ----------- | ---------------------------------------------------------------------- |
+| `LBANK_API_KEY`         | Sí          | API key de afiliado de LBANK                                           |
+| `LBANK_API_SECRET`      | Sí          | Secret key de esa API key (firma HmacSHA256)                           |
+| `INDICATOR_URL`         | Sí          | Enlace que recibe quien cumple: `https://es.tradingview.com/script/stIGX5O9/` |
+| `MIN_DEPOSIT`           | No (`100`)  | USDT mínimos que exige la API. La web pide 115 a propósito: así hay margen |
+| `DEPOSIT_FIELD`         | No (`netDeposit`) | `netDeposit` (depósitos − retiradas) o `totalDeposit` (solo depósitos) |
+| `REQUIRE_DIRECT_INVITE` | No (`true`) | `false` acepta también a los invitados por tus subafiliados            |
+
+La API key se crea en el panel de afiliados de LBANK y tiene que ser de tipo **HmacSHA256**. No la limites por IP: Netlify no sale siempre por la misma IP.
 
 Los textos que ve el usuario tras la comprobación están en `VERIFY_MESSAGES`, al principio de `public/assets/js/main.js`, junto a los enlaces de LBANK y Telegram (`LINKS`).
-
-## Secretos
-
-No van nunca en el repositorio. Se guardan en Cloudflare:
-
-```bash
-npx wrangler secret put LBANK_API_KEY      # API key de afiliado de LBANK
-npx wrangler secret put LBANK_SECRET_KEY   # Secret key (firma HmacSHA256)
-npx wrangler secret put INDICATOR_URL      # Enlace que recibe quien cumple
-```
-
-El indicador actual es `https://es.tradingview.com/script/stIGX5O9/` (XZ TRADERS <分足> Scalping 5m/1m, en TradingView).
-
-La API key se crea en el panel de afiliados de LBANK y tiene que ser de tipo **HmacSHA256**. Si la limitas por IP, la comprobación fallará, porque Cloudflare no sale siempre por la misma IP.
 
 ## Probar en local
 
 ```bash
-npm install
-cp .dev.vars.example .dev.vars   # rellena tus claves (no se sube al repo)
-npm run check-uid -- LBA32323    # llama a LBANK de verdad y muestra la respuesta
-npm run dev                      # web + API en http://localhost:8787
-npm test                         # tests con LBANK simulado
+cp .env.example .env              # rellena tus claves (.env no se sube al repo)
+npm run check-uid -- LBA32323     # llama a LBANK de verdad y muestra la respuesta
+npm run dev                       # web + API en http://localhost:8888 (Netlify CLI)
+npm test                          # tests con LBANK simulado
 ```
 
-## Publicar
+## Publicar en Netlify
 
-1. Crea una cuenta gratis en Cloudflare y añade el dominio `xztraders.com`; Cloudflare te dirá qué servidores DNS poner en tu registrador. Es necesario para usar `indicador.xztraders.com` como dominio propio del Worker.
-2. `npx wrangler login`
-3. Guarda los tres secretos (ver arriba).
-4. `npm run deploy`
+1. En Netlify: *Add new site → Import an existing project → GitHub* y elige este repositorio. Netlify lee `netlify.toml`, así que no hay que tocar nada más en la configuración de build.
+2. Añade las variables de entorno de arriba y vuelve a desplegar.
+3. En *Domain management → Add a domain*, pon `indicador.xztraders.com`.
+4. En Openprovider, en la zona DNS de `xztraders.com`, crea un registro **CNAME** `indicador` → `<nombre-del-sitio>.netlify.app`. La web principal no se toca.
 
-El dominio `indicador.xztraders.com` está en `routes` de `wrangler.jsonc` y Cloudflare lo configura solo al publicar. Si prefieres que se publique al hacer push, conecta este repositorio en Cloudflare → Workers → *Import a repository*.
+Netlify activa HTTPS solo en unos minutos. Cada push a la rama de producción vuelve a publicar la web.
 
 ## Seguridad
 
@@ -100,4 +90,3 @@ printf '%s' 'CONTENIDO_EXACTO_ENTRE_LAS_ETIQUETAS' | openssl dgst -sha256 -binar
 ```
 
 - `_headers` impide que la web se meta en un iframe de otra página (clickjacking).
-- Quien recibe el enlace del indicador puede compartirlo. Si el indicador es un script *invite-only* de TradingView, lo más seguro es dar acceso por nombre de usuario de TradingView en lugar de un enlace público.

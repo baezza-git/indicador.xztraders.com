@@ -11,7 +11,7 @@ const LINKS = {
   telegram: 'https://t.me/xztraders_aibot', // Bot de Telegram para dudas
 };
 
-// Dirección del servidor que comprueba el UID (worker/index.js).
+// Dirección de la función que comprueba el UID (netlify/functions/verify.mjs).
 const VERIFY_URL = '/api/verify';
 
 /*
