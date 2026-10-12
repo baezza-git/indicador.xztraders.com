@@ -29,7 +29,7 @@ const VERIFY_MESSAGES = {
     text: 'Crea una cuenta nueva en LBANK con mi enlace, deposita al menos 101 USDT y vuelve a probar. Si acabas de registrarte, espera unos 10 minutos o escríbeme por Telegram.',
     actions: [
       { label: 'Abrir LBANK', link: 'lbank' },
-      { label: 'Escribirme por Telegram', link: 'contact' },
+      { label: 'Escribe a BAEZZA por Telegram', link: 'contact' },
     ],
   },
   not_direct: {
