@@ -26,7 +26,7 @@ const VERIFY_MESSAGES = {
   },
   not_registered: {
     title: 'Esta cuenta no está registrada con mi enlace',
-    text: 'Crea una cuenta nueva en LBANK con mi enlace, deposita al menos 101 USDT y vuelve a probar. Si acabas de registrarte, espera unos 10 minutos o escríbeme por Telegram.',
+    text: 'Crea una cuenta nueva en LBANK con mi enlace, deposita como mínimo 100 USDT y vuelve a probar. Si acabas de registrarte, espera unos 10 minutos o escríbeme por Telegram.',
     actions: [
       { label: 'Abrir LBANK', link: 'lbank' },
       { label: 'Escribe a BAEZZA por Telegram', link: 'contact' },
@@ -38,8 +38,8 @@ const VERIFY_MESSAGES = {
     actions: [{ label: 'Abrir LBANK', link: 'lbank' }],
   },
   low_deposit: {
-    title: 'Aún no llegas a 101 USDT depositados en LBANK',
-    text: 'Deposita al menos 101 USDT en tu cuenta de LBANK. Si acabas de hacerlo, espera unos minutos y vuelve a probar.',
+    title: 'Aún no llegas a 100 USDT depositados en LBANK',
+    text: 'Deposita como mínimo 100 USDT en tu cuenta de LBANK. Si acabas de hacerlo, espera unos minutos y vuelve a probar.',
   },
   rate_limited: {
     title: 'Demasiados intentos',

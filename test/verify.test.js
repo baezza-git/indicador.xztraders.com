@@ -140,7 +140,7 @@ describe('/api/verify', () => {
     assert.deepEqual(body, { ok: true, url: ENV.INDICATOR_URL });
   });
 
-  it('acepta justo el mínimo de la API (100), aunque la web diga 101', async () => {
+  it('acepta justo el mínimo (100 USDT) y cualquier cantidad mayor', async () => {
     assert.equal((await verify('LBA000EXACT', users)).body.ok, true);
     assert.equal((await verify('LBA000110', users)).body.ok, true);
   });
