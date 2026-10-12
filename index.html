@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Seguridad: solo se cargan recursos de este mismo dominio (ver README) -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-CLjJbbnO/7hJ0pf2nbtT8/rXA+VrFtyqzruFkGOxZ20='; style-src 'self' 'sha256-27SLwcnOOeBnxt2+FEVfE3JV7ZuXmNnakmoEEdbksvI='; img-src 'self' data:; font-src 'self'; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; upgrade-insecure-requests" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <!-- Fondo negro desde el primer instante, antes de que carguen fuentes y estilos -->
+    <style>html,body{background:#000;color:#fafafa}.sprite{position:absolute;width:0;height:0;overflow:hidden}</style>
+    <title>XZ TRADERS · Grupo VIP de Señales de Trading con Acceso Gratis</title>
+    <meta
+      name="description"
+      content="Únete gratis al grupo VIP de XZ TRADERS: señales, academia, indicador chino y análisis. Más de 500 miembros. Regístrate en LBANK con nuestro enlace y deposita más de 115 USDT."
+    />
+    <meta name="theme-color" content="#000000" />
+    <link rel="canonical" href="https://xztraders.com/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:url" content="https://xztraders.com/" />
+    <meta property="og:site_name" content="XZ TRADERS" />
+    <meta property="og:title" content="XZ TRADERS · El grupo VIP de trading, ahora con acceso gratis" />
+    <meta
+      property="og:description"
+      content="Señales, academia, indicador chino y análisis. Más de 500 traders ya están dentro."
+    />
+    <meta property="og:image" content="https://xztraders.com/assets/img/og-cover.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="48x48" href="assets/img/favicon-48.png" />
+    <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
+
+    <link rel="preload" href="assets/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+    <script>document.documentElement.classList.replace('no-js','js');if(window.top!==window.self)document.documentElement.style.visibility='hidden';</script>
+    <script src="assets/js/main.js" defer></script>
+    <script type="module" src="assets/js/beams.js"></script>
+  </head>
+
+  <body>
+    <!-- Iconos (sprite) -->
+    <svg class="sprite" width="0" height="0" aria-hidden="true">
+      <defs>
+        <linearGradient id="mark-grad" gradientUnits="userSpaceOnUse" x1="0" y1="184" x2="0" y2="482">
+          <stop offset="0" stop-color="#ffffff" />
+          <stop offset="1" stop-color="#b8b8b8" />
+        </linearGradient>
+      </defs>
+      <symbol id="logo-mark" viewBox="36 184 590 298">
+        <path fill="url(#mark-grad)" d="M37 186H139L332 377.3C242.8 343.9 151.9 376.5 71.2 417L168.4 319.5ZM271 250L333.5 188H447.4L328 306.5ZM481.5 221.5V323H623.3C536.7 351.7 445.5 392.8 406.8 481V296Z" />
+      </symbol>
+        <symbol id="i-academy" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z" /><path d="M6 12v5c3 2 9 2 12 0v-5" /><path d="M22 10v6" /></g></symbol>
+        <symbol id="i-indicator" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5v4M9 15v4M15 3v4M15 13v6" /><rect x="7" y="9" width="4" height="6" rx="1" /><rect x="13" y="7" width="4" height="6" rx="1" /></g></symbol>
+        <symbol id="i-analysis" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18" /><path d="m7 15 4-4 3 3 5-6" /></g></symbol>
+        <symbol id="i-users" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8" /></g></symbol>
+        <symbol id="i-arrow" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7" /></symbol>
+        <symbol id="i-send" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z" /><path d="M22 2 11 13" /></g></symbol>
+        <symbol id="i-wallet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V5a2 2 0 0 0-2-2H5a2 2 0 0 0 0 4h14a2 2 0 0 1 2 2v3" /><path d="M3 5v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3" /><path d="M21 12h-4a2 2 0 0 0 0 4h4Z" /></g></symbol>
+        <symbol id="i-sparkles" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 13.9 8.1 19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9Z" /><path d="M19 15v4M17 17h4" /></g></symbol>
+        <symbol id="i-plus" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 5v14M5 12h14" /></symbol>
+        <symbol id="i-user-plus" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M19 8v6M22 11h-6" /></g></symbol>
+    </svg>
+
+    <!-- NAV -->
+    <header class="nav" id="nav">
+      <div class="container nav__inner">
+        <a class="brand" href="#top" aria-label="XZ TRADERS, inicio">
+          <svg class="brand__mark" aria-hidden="true"><use href="#logo-mark" /></svg>
+          <span class="brand__name">XZ TRADERS</span>
+        </a>
+        <nav class="nav__links" aria-label="Secciones">
+          <a href="#incluye">Qué incluye</a>
+          <a href="#como-entrar">Cómo entrar</a>
+          <a href="#faq">FAQ</a>
+        </nav>
+        <a class="btn-glow" href="#como-entrar" data-link="telegram">
+          <span class="live-dot" aria-hidden="true"></span>
+          <span>Acceso VIP gratis</span>
+        </a>
+      </div>
+    </header>
+
+    <main id="top">
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero__bg" aria-hidden="true">
+          <canvas class="hero__canvas" id="beams"></canvas>
+          <span class="beam beam--1"></span>
+          <span class="beam beam--2"></span>
+          <span class="beam beam--3"></span>
+          <span class="beam beam--4"></span>
+          <span class="beam beam--5"></span>
+          <span class="beam beam--6"></span>
+          <span class="hero__grain"></span>
+          <span class="hero__vignette"></span>
+        </div>
+
+        <div class="container hero__content">
+          <div class="marquee" aria-label="Lo que incluye el VIP">
+            <ul class="marquee__track">
+              <li><svg aria-hidden="true"><use href="#i-sparkles" /></svg>Señales VIP</li>
+              <li><svg aria-hidden="true"><use href="#i-academy" /></svg>Academia</li>
+              <li><svg aria-hidden="true"><use href="#i-indicator" /></svg>Indicador Chino</li>
+              <li><svg aria-hidden="true"><use href="#i-analysis" /></svg>Análisis de Mercado</li>
+              <li><svg aria-hidden="true"><use href="#i-users" /></svg>Comunidad +500</li>
+            </ul>
+            <ul class="marquee__track" aria-hidden="true">
+              <li><svg><use href="#i-sparkles" /></svg>Señales VIP</li>
+              <li><svg><use href="#i-academy" /></svg>Academia</li>
+              <li><svg><use href="#i-indicator" /></svg>Indicador Chino</li>
+              <li><svg><use href="#i-analysis" /></svg>Análisis de Mercado</li>
+              <li><svg><use href="#i-users" /></svg>Comunidad +500</li>
+            </ul>
+          </div>
+
+          <h1 class="hero__title">
+            <span class="hero__line">El Grupo VIP de Trading,</span>
+            <span class="hero__line hero__line--dim">Ahora Con Acceso Gratis.</span>
+          </h1>
+
+          <p class="hero__lead">
+            Señales, academia, indicador chino y análisis de mercado.
+            Regístrate en LBANK con mi enlace, deposita más de 115&nbsp;USDT y entra.
+          </p>
+
+          <div class="hero__ctas">
+            <a class="btn btn--light btn--lg" href="#como-entrar" data-link="telegram">
+              Entrar gratis al VIP
+              <svg aria-hidden="true"><use href="#i-arrow" /></svg>
+            </a>
+            <a class="btn btn--ghost btn--lg" href="#como-entrar">Ver cómo funciona</a>
+          </div>
+
+          <div class="proof">
+            <div class="proof__avatars" aria-hidden="true">
+              <span>JM</span><span>AL</span><span>KR</span><span>DS</span><span>+</span>
+            </div>
+            <p><strong>+<span data-count="500">500</span> traders</strong> ya están dentro de la comunidad</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- QUÉ INCLUYE -->
+      <section class="section section--line" id="incluye">
+        <div class="container">
+          <div class="section-head reveal">
+            <p class="eyebrow">Qué incluye</p>
+            <h2 class="h2 h2--xl">Todo en un solo lugar.</h2>
+            <p class="lead">Sin mensualidades ni funciones bloqueadas. Todos los miembros tienen acceso a lo mismo.</p>
+          </div>
+
+          <div class="features">
+            <article class="feature reveal">
+              <span class="icon-box icon-box--accent"><svg aria-hidden="true"><use href="#i-sparkles" /></svg></span>
+              <h3>Señales VIP</h3>
+              <p>Entrada, take profit y stop loss, con seguimiento hasta el cierre.</p>
+            </article>
+            <article class="feature reveal">
+              <span class="icon-box icon-box--accent"><svg aria-hidden="true"><use href="#i-academy" /></svg></span>
+              <h3>Academia</h3>
+              <p>Aprende a operar desde cero y a tu ritmo.</p>
+            </article>
+            <article class="feature reveal">
+              <span class="icon-box icon-box--accent"><svg aria-hidden="true"><use href="#i-indicator" /></svg></span>
+              <h3>Indicador chino</h3>
+              <p>El indicador que uso para detectar zonas de compra y venta.</p>
+            </article>
+            <article class="feature reveal">
+              <span class="icon-box icon-box--accent"><svg aria-hidden="true"><use href="#i-analysis" /></svg></span>
+              <h3>Análisis de mercado</h3>
+              <p>Niveles clave y escenarios antes de cada movimiento.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- CÓMO ENTRAR -->
+      <section class="section section--line" id="como-entrar">
+        <div class="container">
+          <div class="section-head reveal">
+            <p class="eyebrow">Cómo entrar</p>
+            <h2 class="h2 h2--xl">Dentro en 3 pasos.</h2>
+            <p class="lead">Tarda unos minutos y es gratis.</p>
+          </div>
+
+          <ol class="steps">
+            <li class="step reveal">
+              <span class="step__num">01</span>
+              <span class="icon-box"><svg aria-hidden="true"><use href="#i-user-plus" /></svg></span>
+              <h3>Regístrate en LBANK</h3>
+              <p>Crea tu cuenta con mi enlace. Si ya tienes una, crea una nueva con este enlace.</p>
+              <a class="btn btn--light btn--sm" href="#como-entrar" data-link="lbank">
+                Abrir LBANK <svg aria-hidden="true"><use href="#i-arrow" /></svg>
+              </a>
+            </li>
+            <li class="step reveal">
+              <span class="step__num">02</span>
+              <span class="icon-box"><svg aria-hidden="true"><use href="#i-wallet" /></svg></span>
+              <h3>Deposita más de 115&nbsp;USDT</h3>
+              <p>Es tu capital para operar y se queda en tu cuenta. No es un pago.</p>
+            </li>
+            <li class="step reveal">
+              <span class="step__num">03</span>
+              <span class="icon-box"><svg aria-hidden="true"><use href="#i-send" /></svg></span>
+              <h3>Habla con el bot y entra</h3>
+              <p>Habla con <strong>@xztraders_aibot</strong> y mándale tu UID de LBANK, que empieza por LBA. Y ya está.</p>
+              <a class="btn btn--ghost btn--sm" href="#como-entrar" data-link="telegram">
+                Abrir @xztraders_aibot
+              </a>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section class="section section--line" id="faq">
+        <div class="container">
+          <div class="section-head section-head--center reveal">
+            <p class="eyebrow eyebrow--lines">Preguntas frecuentes</p>
+            <h2 class="h2 h2--xl">Todo lo que necesitas saber.</h2>
+            <p class="lead">¿Tienes otra duda? Pregúntale a nuestro <a class="link" href="#faq" data-link="telegram">bot de Telegram</a>.</p>
+          </div>
+
+          <div class="faq reveal">
+            <details open>
+              <summary>¿Es gratis?<svg aria-hidden="true"><use href="#i-plus" /></svg></summary>
+              <p>Sí. No pagas nada por entrar ni mensualidades.</p>
+            </details>
+            <details>
+              <summary>¿Cómo entro al VIP?<svg aria-hidden="true"><use href="#i-plus" /></svg></summary>
+              <p>Regístrate en LBANK con mi enlace, deposita más de 115&nbsp;USDT para operar, habla con el <a class="link" href="#como-entrar" data-link="telegram">bot</a> y mándale tu UID. Y ya está.</p>
+            </details>
+            <details>
+              <summary>¿Los 115&nbsp;USDT son un pago?<svg aria-hidden="true"><use href="#i-plus" /></svg></summary>
+              <p>No. Es tu capital para operar y se queda en tu cuenta de LBANK.</p>
+            </details>
+            <details>
+              <summary>¿Qué es el UID y dónde lo encuentro?<svg aria-hidden="true"><use href="#i-plus" /></svg></summary>
+              <p>Es tu número de usuario de LBANK. Lo ves en tu perfil y empieza por LBA, por ejemplo: LBA32323.</p>
+            </details>
+            <details>
+              <summary>Ya tengo cuenta en LBANK, ¿puedo entrar?<svg aria-hidden="true"><use href="#i-plus" /></svg></summary>
+              <p>Sí, pero tienes que crear una cuenta nueva con mi enlace.</p>
+            </details>
+            <details>
+              <summary>¿Necesito experiencia?<svg aria-hidden="true"><use href="#i-plus" /></svg></summary>
+              <p>No. La academia empieza desde cero.</p>
+            </details>
+            <details>
+              <summary>¿Qué es el indicador chino?<svg aria-hidden="true"><use href="#i-plus" /></svg></summary>
+              <p>El indicador que uso para detectar zonas de compra y venta. Dentro te enseño a usarlo.</p>
+            </details>
+            <details>
+              <summary>¿Garantizan ganancias?<svg aria-hidden="true"><use href="#i-plus" /></svg></summary>
+              <p>No. El trading tiene riesgo y puedes perder dinero.</p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA FINAL -->
+      <section class="section section--line cta-final">
+        <div class="container">
+          <div class="section-head section-head--center reveal">
+            <p class="eyebrow eyebrow--lines">Acceso gratuito</p>
+            <h2 class="h2 h2--xl">Únete a los +500 XZ Traders.</h2>
+            <div class="hero__ctas">
+              <a class="btn btn--light btn--lg" href="#como-entrar" data-link="telegram">
+                Entrar gratis al VIP <svg aria-hidden="true"><use href="#i-arrow" /></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer__top">
+          <div>
+            <a class="brand brand--lg" href="#top" aria-label="XZ TRADERS, volver arriba">
+              <svg class="brand__mark" aria-hidden="true"><use href="#logo-mark" /></svg>
+              <span class="brand__name">XZ TRADERS</span>
+            </a>
+            <p class="footer__tag">Señales, academia y comunidad de trading.</p>
+          </div>
+          <nav class="footer__links" aria-label="Enlaces">
+            <a href="#incluye">Qué incluye</a>
+            <a href="#como-entrar">Cómo entrar</a>
+            <a href="#faq">FAQ</a>
+          </nav>
+        </div>
+        <div class="footer__bottom">
+          <p class="footer__legal">
+            El trading de criptomonedas y derivados implica un alto riesgo de pérdida. Nada en este sitio es asesoría
+            financiera. Los resultados pasados no garantizan resultados futuros. Opera solo con capital que puedas
+            permitirte perder.
+          </p>
+          <p class="footer__copy">© <span id="year">2026</span> XZ TRADERS</p>
+        </div>
+      </div>
+      <p class="wordmark" aria-hidden="true">XZ TRADERS</p>
+    </footer>
+
+    <!-- CTA fija en móvil -->
+    <div class="mobile-cta" id="mobile-cta">
+      <a class="btn btn--light btn--block" href="#como-entrar" data-link="telegram">
+        Entrar gratis al VIP <svg aria-hidden="true"><use href="#i-arrow" /></svg>
+      </a>
+    </div>
+  </body>
+</html>
