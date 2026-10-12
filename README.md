@@ -36,6 +36,7 @@ netlify.toml               Configuración de Netlify
 
 1. `GET /affiliate-api/v2/invite/user/info`: el UID tiene que ser de tu equipo (`inviteResult`) y, por defecto, invitado directamente con tu enlace (`directInvitation`).
 2. `GET /affiliate-api/v2/money/net/deposit/total` sin fechas, es decir, todo desde el registro: el depósito neto (depósitos menos retiradas, en USDT) tiene que ser de al menos `MIN_DEPOSIT`.
+   Ese total se actualiza con retraso y no incluye los depósitos del día. Si no llega al mínimo, se consulta `GET /affiliate-api/v2/money/detail/list` (depósitos en cadena de los últimos 7 días, solo USDT/USDC completados) y se usa la cantidad mayor de las dos.
 3. Si cumple, responde `{ "ok": true, "url": "<INDICATOR_URL>" }`. Si no, `{ "ok": false, "code": "..." }` y la web muestra el mensaje correspondiente.
 
 Nunca se muestra cuánto ha depositado alguien: cualquiera puede escribir un UID ajeno.

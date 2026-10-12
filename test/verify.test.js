@@ -26,6 +26,8 @@ function fakeLBank(users, calls = []) {
         : { inviteResult: false, directInvitation: false };
     } else if (u.pathname.endsWith('/money/net/deposit/total')) {
       data = { totalDeposit: String(user?.deposit ?? 0), totalWithdraw: '0', netDeposit: String(user?.deposit ?? 0) };
+    } else if (u.pathname.endsWith('/money/detail/list')) {
+      data = user?.recent ?? [];
     }
     return Response.json({ result: 'true', error_code: 0, data, ts: 1 });
   };
@@ -113,6 +115,23 @@ describe('/api/verify', () => {
     LBA000110: { deposit: 110 },
     LBA000POOR: { deposit: 50 },
     LBA000SUB: { deposit: 500, direct: false },
+    // El total de LBANK aún no refleja los depósitos de hoy.
+    LBA000TODAY: {
+      deposit: 0,
+      recent: [
+        { assetCode: 'USDT', assetNum: '100.99', status: 'Completed' },
+        { assetCode: 'USDT', assetNum: '9.99', status: 'Completed' },
+      ],
+    },
+    LBA000PEND: {
+      deposit: 0,
+      recent: [
+        { assetCode: 'USDT', assetNum: '150', status: 'Processing' },
+        { assetCode: 'BTC', assetNum: '0.01', status: 'Completed' },
+        { assetCode: 'USDT', assetNum: '20', status: 'Completed' },
+      ],
+    },
+    LBA000HALF: { deposit: 60, recent: [{ assetCode: 'USDT', assetNum: '60', status: 'Completed' }] },
   };
 
   it('da el enlace si está registrado y ha depositado lo suficiente', async () => {
@@ -124,6 +143,28 @@ describe('/api/verify', () => {
   it('acepta justo el mínimo de la API (100), aunque la web diga 101', async () => {
     assert.equal((await verify('LBA000EXACT', users)).body.ok, true);
     assert.equal((await verify('LBA000110', users)).body.ok, true);
+  });
+
+  it('cuenta los depósitos de hoy que el total de LBANK aún no refleja', async () => {
+    const calls = [];
+    assert.equal((await verify('LBA000TODAY', users, { calls })).body.ok, true);
+    const detail = calls.find((c) => c.path.endsWith('/money/detail/list'));
+    assert.equal(detail.params.subInOutType, 'IN_DEPOSIT');
+    assert.equal(detail.params.userType, 'SELF');
+  });
+
+  it('no cuenta depósitos pendientes ni de monedas que no son stablecoins', async () => {
+    assert.deepEqual((await verify('LBA000PEND', users)).body, { ok: false, code: 'low_deposit' });
+  });
+
+  it('no suma dos veces lo que ya está en el total', async () => {
+    assert.deepEqual((await verify('LBA000HALF', users)).body, { ok: false, code: 'low_deposit' });
+  });
+
+  it('si el total ya llega, no consulta el detalle', async () => {
+    const calls = [];
+    await verify('LBA0000OK1', users, { calls });
+    assert.equal(calls.some((c) => c.path.endsWith('/money/detail/list')), false);
   });
 
   it('no registrado con el enlace', async () => {

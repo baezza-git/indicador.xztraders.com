@@ -8,6 +8,13 @@ import { DEFAULT_BASE_URL, lbankGet } from './lbank.js';
 
 const USER_INFO_PATH = '/affiliate-api/v2/invite/user/info';
 const NET_DEPOSIT_PATH = '/affiliate-api/v2/money/net/deposit/total';
+const MONEY_DETAIL_PATH = '/affiliate-api/v2/money/detail/list';
+
+// El total de /money/net/deposit/total se actualiza con retraso (los depósitos
+// del día no aparecen). Los de los últimos días se leen uno a uno de
+// /money/detail/list, que sí está al momento.
+const RECENT_DAYS = 7;
+const STABLECOINS = ['USDT', 'USDC'];
 
 // Campos válidos de /money/net/deposit/total (ver documentación de LBANK).
 const DEPOSIT_FIELDS = ['netDeposit', 'totalDeposit'];
@@ -44,7 +51,28 @@ export function readConfig(env) {
  * not_registered | not_direct | low_deposit.
  * Los errores de red o de LBANK se lanzan como LBankError.
  */
-export async function checkUid(id, config, fetchImpl = fetch) {
+// Suma de los depósitos en cadena completados en los últimos RECENT_DAYS días.
+// Solo cuenta stablecoins, que valen 1 USDT.
+async function recentDeposits(id, options, now) {
+  const list = await lbankGet(
+    MONEY_DETAIL_PATH,
+    {
+      ...id,
+      userType: 'SELF',
+      subInOutType: 'IN_DEPOSIT',
+      startTime: now - RECENT_DAYS * 86_400_000,
+      endTime: now,
+      start: 0,
+      pageSize: 100,
+    },
+    options
+  );
+  return (Array.isArray(list) ? list : [])
+    .filter((d) => d.status === 'Completed' && STABLECOINS.includes(String(d.assetCode).toUpperCase()))
+    .reduce((sum, d) => sum + (Number(d.assetNum) || 0), 0);
+}
+
+export async function checkUid(id, config, fetchImpl = fetch, now = Date.now()) {
   const options = {
     apiKey: config.apiKey,
     secretKey: config.secretKey,
@@ -58,8 +86,13 @@ export async function checkUid(id, config, fetchImpl = fetch) {
 
   // Sin startTime/endTime: todo lo depositado desde el registro.
   const deposit = await lbankGet(NET_DEPOSIT_PATH, id, options);
-  const amount = Number(deposit?.[config.depositField]);
-  if (!Number.isFinite(amount) || amount < config.minDeposit) return { ok: false, code: 'low_deposit' };
+  const total = Number(deposit?.[config.depositField]) || 0;
+  if (total >= config.minDeposit) return { ok: true };
+
+  // El total aún no incluye los depósitos recientes: se miran aparte.
+  // Se usa el mayor de los dos para no contar dos veces el mismo depósito.
+  const recent = await recentDeposits(id, options, now);
+  if (Math.max(total, recent) < config.minDeposit) return { ok: false, code: 'low_deposit' };
 
   return { ok: true };
 }
