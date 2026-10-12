@@ -8,7 +8,7 @@ const ENV = {
   LBANK_API_KEY: 'test-api-key',
   LBANK_SECRET_KEY: 'test-secret',
   INDICATOR_URL: 'https://example.com/indicador',
-  MIN_DEPOSIT: '115',
+  MIN_DEPOSIT: '100',
   DEPOSIT_FIELD: 'netDeposit',
   REQUIRE_DIRECT_INVITE: 'true',
 };
@@ -109,7 +109,8 @@ describe('/api/verify', () => {
 
   const users = {
     LBA0000OK1: { deposit: 150 },
-    LBA000EXACT: { deposit: 115 },
+    LBA000EXACT: { deposit: 100 },
+    LBA000110: { deposit: 110 },
     LBA000POOR: { deposit: 50 },
     LBA000SUB: { deposit: 500, direct: false },
   };
@@ -120,8 +121,9 @@ describe('/api/verify', () => {
     assert.deepEqual(body, { ok: true, url: ENV.INDICATOR_URL });
   });
 
-  it('acepta justo el mínimo', async () => {
+  it('acepta justo el mínimo de la API (100), aunque la web diga 115', async () => {
     assert.equal((await verify('LBA000EXACT', users)).body.ok, true);
+    assert.equal((await verify('LBA000110', users)).body.ok, true);
   });
 
   it('no registrado con el enlace', async () => {

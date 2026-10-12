@@ -49,7 +49,7 @@ En `wrangler.jsonc`, dentro de `vars`:
 
 | Variable                | Por defecto  | Qué hace                                                                          |
 | ----------------------- | ------------ | --------------------------------------------------------------------------------- |
-| `MIN_DEPOSIT`           | `115`        | USDT mínimos depositados                                                          |
+| `MIN_DEPOSIT`           | `100`        | USDT mínimos que exige la API. La web pide 115 a propósito: así hay margen        |
 | `DEPOSIT_FIELD`         | `netDeposit` | `netDeposit` (depósitos − retiradas) o `totalDeposit` (solo depósitos)            |
 | `REQUIRE_DIRECT_INVITE` | `true`       | `false` acepta también a los invitados por tus subafiliados                       |
 | `ALLOWED_ORIGINS`       | vacío        | Solo si la web se sirve desde otro dominio: orígenes permitidos, separados por comas |

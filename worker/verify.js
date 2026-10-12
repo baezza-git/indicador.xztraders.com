@@ -26,14 +26,14 @@ export function parseUid(raw) {
 }
 
 export function readConfig(env) {
-  const minDeposit = Number(env.MIN_DEPOSIT ?? 115);
+  const minDeposit = Number(env.MIN_DEPOSIT ?? 100);
   const depositField = DEPOSIT_FIELDS.includes(env.DEPOSIT_FIELD) ? env.DEPOSIT_FIELD : 'netDeposit';
   return {
     apiKey: env.LBANK_API_KEY,
     secretKey: env.LBANK_SECRET_KEY,
     baseUrl: env.LBANK_BASE_URL || DEFAULT_BASE_URL,
     indicatorUrl: env.INDICATOR_URL,
-    minDeposit: Number.isFinite(minDeposit) ? minDeposit : 115,
+    minDeposit: Number.isFinite(minDeposit) ? minDeposit : 100,
     requireDirect: String(env.REQUIRE_DIRECT_INVITE ?? 'true').toLowerCase() !== 'false',
     depositField,
   };

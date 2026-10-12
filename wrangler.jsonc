@@ -17,7 +17,7 @@
   // Ajustes que no son secretos. Los secretos (claves de LBANK y enlace del
   // indicador) se guardan con `npx wrangler secret put` y nunca van al repo.
   "vars": {
-    "MIN_DEPOSIT": "115",
+    "MIN_DEPOSIT": "100",
     "DEPOSIT_FIELD": "netDeposit",
     "REQUIRE_DIRECT_INVITE": "true",
     "ALLOWED_ORIGINS": ""
