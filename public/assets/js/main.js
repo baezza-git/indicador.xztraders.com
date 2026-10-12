@@ -34,7 +34,7 @@ const VERIFY_MESSAGES = {
     action: { label: 'Abrir LBANK', link: 'lbank' },
   },
   low_deposit: {
-    title: 'Aún no llegas a 101 USDT depositados',
+    title: 'Aún no llegas a 101 USDT depositados en LBANK',
     text: 'Deposita al menos 101 USDT en tu cuenta de LBANK. Si acabas de hacerlo, espera unos minutos y vuelve a probar.',
   },
   rate_limited: {
