@@ -812,10 +812,6 @@ svg {
   line-height: 1.6;
 }
 
-.features--3 {
-  grid-template-columns: repeat(3, 1fr);
-}
-
 /* --------------------------------------------------------------------------
    Pasos
    -------------------------------------------------------------------------- */
@@ -1240,10 +1236,6 @@ svg {
 
   .features {
     grid-template-columns: repeat(2, 1fr);
-  }
-
-  .features--3 {
-    grid-template-columns: 1fr;
   }
 
   .steps {

@@ -66,6 +66,8 @@ npx wrangler secret put LBANK_SECRET_KEY   # Secret key (firma HmacSHA256)
 npx wrangler secret put INDICATOR_URL      # Enlace que recibe quien cumple
 ```
 
+El indicador actual es `https://es.tradingview.com/script/stIGX5O9/` (XZ TRADERS <分足> Scalping 5m/1m, en TradingView).
+
 La API key se crea en el panel de afiliados de LBANK y tiene que ser de tipo **HmacSHA256**. Si la limitas por IP, la comprobación fallará, porque Cloudflare no sale siempre por la misma IP.
 
 ## Probar en local

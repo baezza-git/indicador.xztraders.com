@@ -2,4 +2,4 @@
 # .dev.vars está en .gitignore: NO lo subas al repositorio.
 LBANK_API_KEY=tu-api-key-de-afiliado
 LBANK_SECRET_KEY=tu-secret-key-de-afiliado
-INDICATOR_URL=https://enlace-del-indicador
+INDICATOR_URL=https://es.tradingview.com/script/stIGX5O9/

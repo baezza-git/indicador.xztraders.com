@@ -244,8 +244,8 @@ function initVerify() {
         render(
           'ok',
           '¡Todo listo! Ya puedes usar el indicador.',
-          'Tu cuenta está verificada. Guarda este enlace para volver cuando quieras.',
-          linkButton('Abrir el indicador', data.url, true)
+          'Tu cuenta está verificada. Se abre en TradingView: pulsa «Utilizar en el gráfico» y añádelo a favoritos para tenerlo siempre a mano.',
+          linkButton('Abrir en TradingView', data.url, true)
         );
       } else {
         showError(data.code);
