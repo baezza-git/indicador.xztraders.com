@@ -22,7 +22,12 @@ function fakeLBank(users, calls = []) {
     let data;
     if (u.pathname.endsWith('/invite/user/info')) {
       data = user
-        ? { inviteResult: true, directInvitation: user.direct ?? true }
+        ? {
+            inviteResult: true,
+            directInvitation: user.direct ?? true,
+            currencyTotalFeeAmt: String(user.spot ?? 0),
+            contractTotalFeeAmt: String(user.futures ?? 0),
+          }
         : { inviteResult: false, directInvitation: false };
     } else if (u.pathname.endsWith('/money/net/deposit/total')) {
       data = { totalDeposit: String(user?.deposit ?? 0), totalWithdraw: '0', netDeposit: String(user?.deposit ?? 0) };
@@ -132,6 +137,10 @@ describe('/api/verify', () => {
       ],
     },
     LBA000HALF: { deposit: 60, recent: [{ assetCode: 'USDT', assetNum: '60', status: 'Completed' }] },
+    // Recibió los USDT por transferencia interna: no cuenta como depósito, pero sí como saldo.
+    LBA000XFER: { deposit: 0, spot: 102 },
+    LBA000MIX: { deposit: 0, spot: 40, futures: 60 },
+    LBA000LOWBAL: { deposit: 0, spot: 99.99 },
   };
 
   it('da el enlace si está registrado y ha depositado lo suficiente', async () => {
@@ -165,6 +174,20 @@ describe('/api/verify', () => {
     const calls = [];
     await verify('LBA0000OK1', users, { calls });
     assert.equal(calls.some((c) => c.path.endsWith('/money/detail/list')), false);
+  });
+
+  it('acepta el saldo spot aunque LBANK no lo cuente como depósito', async () => {
+    const calls = [];
+    assert.equal((await verify('LBA000XFER', users, { calls })).body.ok, true);
+    assert.equal(calls.length, 1, 'con el saldo basta: solo se llama a user/info');
+  });
+
+  it('suma spot y futuros', async () => {
+    assert.equal((await verify('LBA000MIX', users)).body.ok, true);
+  });
+
+  it('saldo por debajo del mínimo y sin depósitos', async () => {
+    assert.deepEqual((await verify('LBA000LOWBAL', users)).body, { ok: false, code: 'low_deposit' });
   });
 
   it('no registrado con el enlace', async () => {

@@ -1,7 +1,8 @@
 /* ==========================================================================
    Comprobación de un UID de LBANK:
    1. Está registrado con el enlace de afiliado (es del equipo).
-   2. Tiene depositado al menos MIN_DEPOSIT USDT.
+   2. Tiene al menos MIN_DEPOSIT USDT, según cualquiera de estos datos:
+      saldo spot + futuros, depósito neto total o depósitos recientes.
    ========================================================================== */
 
 import { DEFAULT_BASE_URL, lbankGet } from './lbank.js';
@@ -72,6 +73,14 @@ async function recentDeposits(id, options, now) {
     .reduce((sum, d) => sum + (Number(d.assetNum) || 0), 0);
 }
 
+// Activos spot + futuros en USDT, que ya vienen en /invite/user/info.
+// Incluye lo recibido por transferencia interna, que LBANK no cuenta como depósito.
+function accountAssets(info) {
+  const spot = Number(info.currencyTotalFeeAmt ?? info.currencyTotalFeeAmtUsdt) || 0;
+  const futures = Number(info.contractTotalFeeAmt) || 0;
+  return spot + futures;
+}
+
 export async function checkUid(id, config, fetchImpl = fetch, now = Date.now()) {
   const options = {
     apiKey: config.apiKey,
@@ -83,6 +92,10 @@ export async function checkUid(id, config, fetchImpl = fetch, now = Date.now()) 
   const info = await lbankGet(USER_INFO_PATH, id, options);
   if (!info || info.inviteResult !== true) return { ok: false, code: 'not_registered' };
   if (config.requireDirect && info.directInvitation !== true) return { ok: false, code: 'not_direct' };
+
+  // Basta con que cualquiera de los datos llegue al mínimo. Primero el saldo,
+  // que no necesita otra llamada a LBANK.
+  if (accountAssets(info) >= config.minDeposit) return { ok: true };
 
   // Sin startTime/endTime: todo lo depositado desde el registro.
   const deposit = await lbankGet(NET_DEPOSIT_PATH, id, options);
