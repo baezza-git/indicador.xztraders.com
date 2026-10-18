@@ -7,7 +7,7 @@
  * Cambia aquí tus enlaces y se actualizan en toda la página.
  */
 const LINKS = {
-  lbank: 'https://www.lbank.com/ref/62R2M', // Enlace de referido de LBANK
+  lbank: 'https://www.lbank.com/ref/XZTRADERS', // Enlace de referido de LBANK
   telegram: 'https://t.me/xztraders_aibot', // Bot de Telegram para dudas
   contact: 'https://t.me/baezza', // Mi Telegram, para quien tenga problemas al verificar
 };
