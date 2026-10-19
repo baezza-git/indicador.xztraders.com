@@ -256,7 +256,7 @@ function initVerify() {
         render(
           'ok',
           '¡Todo listo! Ya puedes usar el indicador.',
-          'Tu cuenta está verificada. Se abre en TradingView: pulsa «Utilizar en el gráfico» y añádelo a favoritos para tenerlo siempre a mano.',
+          'Tu cuenta está verificada. Se abre en TradingView: pulsa «Utilizar en el gráfico» y añádelo a favoritos para tenerlo siempre a mano. Importante: si no operas en LBANK y tu cuenta queda inactiva sin hacer trading, perderás el acceso al indicador.',
           linkButton('Abrir en TradingView', data.url, true)
         );
       } else {
